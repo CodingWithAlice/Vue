@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>模板语法</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- 第一种：插值表达式 -->
+        {{name + 'Lee'}}
+        
+        <!-- 第二种：指令后面跟了一个值的时候，说明后面跟的不是字符串而是一个js的表达式-->
+        <!-- v-text的意思是，将innerTxet的内容变成后面表达式中的内容 -->
+        <div v-text='name + "Lee"'></div>
+         
+        <!-- 第三种 v-html ，除了可以正常显示内容以外，遇到标签还会进行解析 -->
+        <div v-html='name + "Lee"'></div>
+        
+        <!-- 总结：这三种有什么不同呢? 共同点：都可以添加写js表达式；
+            插值表达式和v-text功能是一样的，不会解析标签
+            v-html是可以解析标签的
+         -->
+    </div>
+    <script>
+        var vm = new Vue({
+            el:'#app',
+            data:{
+                name:'deil'
+            }
+        })
+    </script>
+</body>
+</html>
