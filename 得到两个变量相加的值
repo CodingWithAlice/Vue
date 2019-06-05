@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>计算属性，方法，侦听器</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        {{ fullName}}
+        {{age}}
+    </div>
+    
+    <script>
+        var vm = new Vue({
+            el:"#app",
+            data:{
+                firstName:'Dell',
+                lastName:'Alice',
+                fullName:"Dell Alice",
+                age : 39
+            },
+            // 第三种方法
+            // 和计算属性很类似，会有缓存，依赖的变量不发生改变就不会重新渲染
+            // watch和computed语法对比，功能相似，但是computed的语法更加简单
+            watch:{
+                firstName:function(){
+                    console.log('计算了一次');
+                    this.fullName = this.firstName + " " +this.lastName;
+                },
+                lastName:function(){
+                    console.log('计算了一次');                    
+                    this.fullName = this.firstName + " " +this.lastName;
+                }
+            }
+            // 第二种方法
+            // methods:{
+            //     // 这是一个方法，如果DOM结构里面要使用的话，就要在方法后面加括号()
+            //     // 虽然这个方式也能够显示fullname，但是不如下面的计算属性好
+            //     // 没有缓存机制，如果我改变了页面中age的值，这个方法也会重新渲染一次
+            //     fullName:function(){
+            //         console.log('计算了一次');
+            //         return this.firstName + " " + this.lastName
+            //     }
+            // }
+            
+            // 第一种方法
+            // 计算属性,特点：内置缓存,也就是说，计算属性依赖的值不变化，它就不会重新计算
+            // computed:{
+            //     fullName:function(){
+            //         console.log('计算了一次');
+            //         return this.firstName + " " + this.lastName
+            //     }
+
+            // }
+        })
+    </script>
+</body>
+</html>
