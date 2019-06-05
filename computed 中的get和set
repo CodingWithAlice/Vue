@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- 在插值表达式里面,会先到data里面去找,找不到就去计算属性里面去找 -->
+        {{fullName}}
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el:'#app',
+            data:{
+                firstName:'Dell',
+                lastName:'Alice'                
+            },
+            // computed的特性是当它依赖的值变化的时候会进行重新计算
+            computed :{
+                // fullName: function() {
+                //     return this.firstName + ' ' + this.lastName
+                // }
+                // 上面是一种显示方式,下面再写一种,对象
+                fullName:{//取fullName这个值的时候,运行get方法,当设置值的时候,set执行
+                    get : function() {
+                        return this.firstName + ' ' + this.lastName
+                        // 写的时候不要漏写return以及this.
+                    },
+                    // 接收到外部传过来的数据
+                    set : function(value){
+                        var arr = value.split(" ");
+                        this.firstName = arr[0];
+                        this.lastName = arr[1];
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>
