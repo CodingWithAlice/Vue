@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>改变样式</title>
+    <script src="./vue.js"></script>
+    <style>
+        .activated {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!--第一种方法：class对象绑定方式 :class="{activated:isActivated}" -->
+        <div @click='handleDivClick' :class="{activated:isActivated}">
+            hello world
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                isActivated: false
+            },
+            // 第一种方法：class的对象绑定,绑定点击事件,事件改变class是否显示
+            methods: {
+                handleDivClick: function () {
+                    this.isActivated = !this.isActivated
+                }
+            }
+        })
+    </script>
+
+    <div id="app1">
+        <!-- 第二种方法：class的数组绑定 -->
+        <div @click='handleDivClick' 
+            :class="[activated,activatedOne]"
+        >
+            hello world
+        </div>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: "#app1",
+            data: {
+                activated: '',
+                activatedOne: 'activated-one'
+            },
+            //第二种方法
+            //class可以和一个数组相绑定,数组里面写的内容代表的是一个变量,class绑定的是数组里面的内容
+            methods:{
+                handleDivClick:function(){
+                    //class:"[activated]"显示的是activated中的内容   
+                    //三元表达式，如果class是有activated这个属性的,那么赋值为‘’空
+                    //如果class没有,就给这个标签一个activated的属性
+                    this.activated= this.activated==="activated"?'':"activated"
+                }
+            }
+
+        })
+    </script>
+
+    <!-- 第三种方法:内联样式 style,也是用两种方法，一种是对象绑定，一种是数组绑定 -->
+    <!-- 先展示第一种：对象绑定方式 -->
+    <div id="app2">
+        <div :style='styleObj' @click='handleDivClick'>
+            hello world
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el:'#app2',
+            data:{
+                styleObj:{
+                    color:'black'
+                }
+            },
+            methods:{
+                handleDivClick:function(){
+                    this.styleObj.color=this.styleObj.color==="black" ? 'red' : "black";
+                }
+            }
+        })
+    </script>
+    
+    <!-- 第四种方法 内联：第二种方式，数组绑定方式 -->
+    <!-- 写内联样式的时候，不要写font-size，要写fontSize -->
+    <div id="app3">
+        <div :style='[styleObj,{fontSize:"20px"}]' @click='handleDivClick'>hello world</div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el:'#app3',
+            data:{
+                styleObj:{
+                    color:'black'
+                }
+            },
+            methods:{
+                handleDivClick:function(){
+                    this.styleObj.color=this.styleObj.color==='black'?"red":'black'
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
