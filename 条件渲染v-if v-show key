@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue中的条件渲染</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="app1">
+        <!-- 通过一个v-if的指令,结合js的表达式,决定一个标签是否在页面上展示 -->
+        <div v-if='show' data-test="v-if">{{message}} </div>
+        <!-- 比较v-if和v-show可知,两者都可以控制一个模板标签是否在页面上显示 -->
+        <!-- 两者的区别:v-if定义的标签,只要值是false,就不会存在于DOM结构之上
+                       v-show定义的标签值是false的时候,仍存在DOM上,只是display:none了 -->
+        <!-- 在具体使用的时候,会更多用到v-show，不会频繁操作DOM树,性能相对高一些  -->
+        <div v-show='show' data-test="v-show">{{message}} </div>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el:'#app1',
+            data:{
+                show:false,
+                message:'Hello World'
+            }
+        })
+    </script>
+    
+    <!-- 条件表达式更加复杂的用法 -->
+    <!-- 在是用v-if和v-else的时候,要紧贴在一起使用,若中间有别的标签,比如<span>，那么页面就会报错,页面就无法解析了 -->
+    <div id="app2">
+        <div v-if='show'>{{message}}</div>
+        <div v-else>Bye World</div>
+
+        <div v-if='show1 === "a"'>This is A</div>
+        <div v-else-if='show1 ==="b" '>This is B</div>
+        <div v-else>This is others </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el:'#app2',
+            data:{
+                show1:'a',
+                show:false,
+                message:'hello world'
+            }
+        })
+    </script>
+
+    <!-- 条件渲染中key值的使用 -->
+    <!-- 为什么要使用key值:
+        因为在改变show后,页面进行重新渲染时,会尽量复用页面上的DOM,
+        导致已经输入的用户名的input没有清空并继续作为邮箱的input使用 -->
+    <!-- 为某个标签添加key值(名字任意)之后，Vue会知道是页面唯一的元素，两个key值不一样，
+        Vue就不会尝试复用这个标签 -->
+    <div id="app3">
+        <div v-if='show2' >
+            用户名<input key='username'/>
+        </div>
+        <div v-else>
+            邮箱<input key='passwaord' />
+        </div>
+    </div>
+    <script>
+        var vm =new Vue({
+            el:'#app3',
+            data:{
+                show3:false,
+            }
+        })
+    </script>
+</body>
+</html>
