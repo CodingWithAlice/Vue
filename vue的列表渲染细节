@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue中的列表渲染</title>
+    <script src='./vue.js'></script>
+</head>
+
+<body>
+    <div id="app">
+        <h1> 写循环的一些小细节 <h1>
+        <!-- 为了提升循环显示的性能，会给每个循环项上加一个唯一的key值
+             这里不是很推荐写inedx值，会频繁造作DOM元素相对应的数据，废性能,可能会导致Vue没有办法充分复用节点 
+             一般项目中除了内容还会返回id，使用这个id作为标识-->
+             
+        <!-- 当我们为数组增加内容的时候，不能使用数组的下标形式添加/改变数组(这种方法虽然会改变数据，但是页面不会响应)；
+            我们只能通过vue提供的几个数组变异方法来操作数组，
+            才能够实现数据发生变化，页面也跟着变化这种响应式的方法 -->
+            
+        <!-- 这几个方法分别是：push增加最后一项 pop删除最后一项 shift删除第一项 unshift添加第一项 
+            splice(1开始下标,1个数,添加的内容)数组的截取 sort数组排序 reverse数组取反 -->
+            
+        <!-- 第二种方法：改变数组内容并响应的方法，就是“改变引用”，直接修改引用的list，让它指向另一个地址 -->
+        <template v-for='(item,index) of list' :key='item.id'>
+            <!-- 当我们要遍历两个标签，但是又不想用div标签来包裹这两个标签循环的时候
+                可以使用template模板占位符，在渲染的过程中并不会真正得被渲染到页面上 -->
+            <div>
+                {{item.text}}---{{index}}
+            </div>
+            <span>
+                {{item}}
+            </span>
+        </template>
+
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                list: [
+                    {
+                        id: '5646465',
+                        text: 'nihao'
+                    },
+                    {
+                        id: '45645646',
+                        text: 'how'
+                    },
+                    {
+                        id: '54687',
+                        text: 'you'
+                    }
+                ]
+            }
+        })
+    </script>
+
+    <!-- 除了数组，对象也可以进行循环 -->
+    <div id="app1">
+        <!-- item是键值,key是键名,index是索引 -->
+        <!-- 这里直接修改键值,页面是可以做到响应的,但是如果是添加一个键值对,就会发现只改变了数值,页面没有进行响应式改变
+             这个时候使用改变指向,直接重新赋值userInfo这个对象的所有值 -->
+        <div v-for='(item,key,index) of userInfo'>
+            {{item}}---{{key}}----{{index}}
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el:'#app1',
+            data:{
+                userInfo:{
+                    name:'Alice',
+                    age:28,
+                    gender:'female',
+                    salary:'zero'
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
