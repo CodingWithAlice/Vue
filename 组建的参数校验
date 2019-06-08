@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件的参数校验与非props特性</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <child content='hello world'></child>
+        <!-- <child :content='3'></child> 这个时候传的是数字-->
+    </div>
+    <script>
+        Vue.component('child',{
+            // 如果要实现子组件要求父组件传递过来的参数一定要是字符串,在props里面不写数组,写对象,对象的键就是我们接收的参数的名字
+            props:{
+                // content:String
+                // 这行的意思就是子组件接收的参数一定要是一个字符串
+                // content:[Number,String]
+                // 可以用数组来定义传输参数的类型，可以是字符串/数组
+                content:{
+                    type:String,
+                    required:false,
+                    default: 'default value',
+                    validator:function(value){
+                        return (value.lenght>5)
+                    }
+                }
+                // 可以让content后面跟着更加复杂的要求,required:true说明了这个参数是必须传的,如果是false,那么不传也可以
+                //  假设不传的时候,会显示默认值‘default value’
+                // validator里面先获取传入的参数值value,要求满足长度大于5,要是没有满足，控制台就会报错
+            },
+            template:'<div>{{content}}</div>'
+        })
+
+        // props特性指的就是父组件传递一个参数给子组件,同时子组件也定义了相应的props对父组件进行接收
+        // props特性的特点：1.父组件定义了参数传递content='hell',但是在DOM结构里面是看不到的
+                        // 2.子组件接收到父组件传递的值之后,就可以直接在子组件用插值表达式或者this.content获取到参数的值了
+        // 非props特性指的是父组件传递一个参数给子组件，但是子组件没有定义props相关内容
+            // 在这种情况下,1.页面会报错,content没有定义无法使用,获取不到参数内容
+                        // 2.这个属性会展示在子组件最外层的DOM标签的HTML的属性里面
+        var vm = new Vue({
+            el:'#root',
+
+        })
+    </script>
+</body>
+</html>
