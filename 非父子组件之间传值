@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>非父子组件间传值(BUS/总线/发布订阅模式/观察者模式)</title>
+    <script src='./vue.js'></script>
+</head>
+
+<body>
+    <div id="root">
+        <child content='Alice'></child>
+        <child content='Sunny'></child>
+    </div>
+
+    <script>
+        // 在Vue的prototype上面挂载了一个bus属性,这个属性指向一个vue的实例,只要后面创建vue,每一个都有bus属性,指向同一个实例
+        Vue.prototype.bus = new Vue()
+
+        Vue.component('child', {
+            data: function () {
+                return {
+                    selfContent: this.content
+                }
+            },
+            props: {
+                content: String
+            },
+            template: '<div @click="handleClick">{{selfContent}}</div>',
+            methods: {
+                handleClick: function () {
+                    this.bus.$emit('change', this.selfContent)
+                }
+            },
+            // 生命周期钩子,每个组件被挂载的时候执行的函数,让两个组件进行监听
+            mounted: function () {
+                var this_ = this
+                this.bus.$on('change', function (msg) {
+                    this_.selfContent = msg;
+                })
+            }
+        })
+        var vm = new Vue({
+            el: '#root',
+
+        })
+    </script>
+</body>
+
+</html>
