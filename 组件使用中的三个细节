@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件使用中的细节点</title>
+    <script src="./vue.js"></script>
+</head>
+
+<body>
+    <div id="root">
+        <!-- 第一点：使用is属性解决模板标签上的bug情况 -->
+        <!-- h5的规范里面，table里面一定要有tdoby，tbody里面一定要有tr，如果用row组件代替tr使用就会报错 -->
+        <!-- 同理还有<ul><ol>里面都要放<li>标签;<select>标签里面要放<option> -->
+        <table>
+            <tbody>
+                <tr is='row'></tr>
+                <tr is='row'></tr>
+                <tr is='row'></tr>
+            </tbody>
+        </table>
+        <!-- 第三个点,在Vue之中如何操作DOM -->
+        <!-- 用ref进行引用命名,$refs是所有引用的名称,找到我们定义的‘hello’的ref,获取其中的内容 -->
+        <!-- 在标签上面使用ref通过this.$refs.名字 获取到的是标签对应的DOM元素;
+             在组件上面使用ref通过this.$refs.名字 获取到的是子组件的引用  -->
+        <div 
+            ref='hello' 
+            @click='handleDivClick'
+        >
+            hello world
+        </div>
+    </div>
+    <script>
+        // 第二个点：data在根组件里面可以直接定义,但是在子组件中定义data时,要求必须是一个函数,返回所对应的数据内容
+        Vue.component('row', {
+            template: '<tr><td>{{content}}</td></tr>',
+            data: function () {
+                return {
+                    content: 'this is a row'
+                }
+            }
+        })
+
+        var vm = new Vue({
+            el: '#root',
+            methods: {
+                handleDivClick: function () {
+                    alert(this.$refs.hello.innerHTML)
+                }
+            }
+        })
+    </script>
+
+    <!-- 针对第三点的引用ref 构建一个count计数功能 -->
+    <div id='root1'>
+        <counter ref='counter1' @change='handleChange'></counter>
+        <counter ref='counter2' @change='handleChange'></counter>
+        <div>{{total}}</div>
+    </div>
+    <script>
+        Vue.component('counter',{
+            template:'<div @click="handleClick">{{number}}</div>',
+            data:function(){
+                return{
+                    number:0
+                }
+            },
+            methods:{
+                handleClick:function(){
+                    this.number++
+                    // 这里涉及到子组件向父组件传值的内容,用emit触发一个change事件,在父组件进行监听
+                    this.$emit('change')
+                }
+            }
+        })
+        var vm = new Vue({
+            el:'#root1',
+            data:{
+                total:0
+            },
+            methods:{
+                handleChange:function(){
+                    this.total=this.$refs.counter1.number + this.$refs.counter2.number
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
