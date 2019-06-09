@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue中的作用域插槽</title>
+    <script src='./vue.js'></script>
+</head>
+<body>
+    <!-- 什么时候用这个作用域插槽的应用场景？  -->
+    <!-- 回答:当子组件进行循环DOM结构需要由外部传递进来的时候;子组件可以向父组件的插槽里面传数据-->
+    <!-- 首先,父组件调用子组件的时候,给子组件传了一个插槽,这个插槽叫做作用域插槽,它必须以template标签包裹;
+        同时这个插槽需要声明要从子组件接受的数据放在slot-scope='props';
+        还要告诉子组件一个模板的信息(接收到的数据的展示方式), li、h1标签等对这个数据进行展示-->
+    <div id='root'>
+        <child>
+            <template slot-scope='props'>
+                <h1>{{props.item}} - hello</h1>
+            </template>
+        </child>
+    </div>
+    <script>
+        Vue.component('child',{
+            data:function(){
+                return {
+                    list:[1,2,3,4]
+                }
+            },
+            template:`<div>
+                        <ul>
+                            <slot 
+                                v-for="item of list"
+                                :item=item
+                            >
+                                {{item}}
+                            </slot>
+                        </ul>
+                    </div>`
+        })
+        var vm = new Vue({
+            el:'#root'
+        })
+    </script>
+</body>
+</html>
