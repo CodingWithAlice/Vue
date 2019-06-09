@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue中CSS动画原理</title>
+    <script src='./vue.js'></script>
+    <style>
+        .fade-enter,
+        .fade-leave-to   {
+            opacity:0;
+            /* 对fade-enter来说,第一个瞬间就是0,到第二个瞬间,这个class被移除了,回到opacity:1,被transition监测到了变化 */
+            /* 对fade-leave来说,第一个瞬间状态是opacity：1,第二个瞬间变成0,触发了transition的动画 */
+        }
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity 3s;
+            /* 对opacity进行一个transition的监控 */
+            /* 整个过程都存在 */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+        <!-- transition标签包裹代表了里面有过渡的动画效果;(实际上是通过添加移除样式实现的)
+             当transition的标签上没有声明name,就用v-enter等定义样式 -->
+        <!-- transition包裹了元素之后,vue会自动分析元素的css样式,然后构建一个动画的流程
+            从隐藏状态到显示状态的流程详细为:
+                    1.在动画即将被执行的一瞬间,vue会往内部的div上添加两个class名字:v-enter、v-enter-active;
+                    2.在动画第一帧结束之后,vue会在运行到第二帧的时候,先移除之前的v-enter类,然后再增加一个v-enter-to的class;
+                    3.接着动画会继续执行,在执行到结束的一瞬间,vue会去除之前添加的v-enter-active、v-enter-to的两个class 
+            从显示状态到隐藏状态的流程详细为:    
+                    1.在动画即将被执行的一瞬间,vue会往内部的div上添加两个class名字:v-leave、v-leave-active;
+                    2.在动画第一帧结束之后,vue会在运行到第二帧的时候,先移除之前的v-leave类,然后再增加一个v-leave-to的class;
+                    3.接着动画会继续执行,在执行到结束的一瞬间,vue会去除之前添加的v-leave-active、v-leave-to的两个class
+                -->
+        <transition name='fade'>
+        <!-- transition只能对一个标签进行作用,两个标签的话,要使用transition-group
+            <div v-if='show'>heelo</div> -->
+            <div v-show='show'>heelo</div>
+        </transition>
+        <button @click='handleBtnClick'>切换</button>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#root',
+            data: {
+                show: true
+            },
+            methods: {
+                handleBtnClick: function () {
+                    this.show = !this.show
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
