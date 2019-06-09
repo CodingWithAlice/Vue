@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue中的插槽slot</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <child content="<p> Dell </p>"></child>
+    </div>
+    <script>
+        Vue.component('child',{
+            props:['content'],
+            // 这里虽然已经可以显示Dell,但是外面会多一个div标签
+            // 用template模板占位符尝试,发现无法渲染
+            // 待解决问题1:在子组件中使用content中的带标签的内容,需要在外面添加一个div包裹,不方便
+            template:'<div><p>hello</p><div v-html="this.content"></div></div>'
+        })
+        var vm =new  Vue({
+            el : '#root',
+
+        })
+    </script>
+    <!-- 如何让父组件用插槽优雅得向子组件传递DOM结构 -->
+    <!-- 先在父组件里面插入一个p标签;然后在模板中插入slot标签,slot标签会引用在父组件中插入的内容 -->
+    <!-- slot里面也有一些新的属性:<slot>默认内容</slot> 在没有插槽内容的时候,就会显示默认内容;也可以写<slot><h1>默认内容</h1></slot> -->
+    <!-- 当我们在子组件中使用两次slot标签的时候,会出现双倍的标签内容,这个时候在父组件中传递的时候标注slot的名称,在子组件中调用的时候给出name名称 -->
+    <div id="root1">
+        <child>
+            <p slot='header'>Dell1</p>
+            <p slot='footer'>Dell2</p>
+        </child>
+    </div>
+    <script>
+        Vue.component('child',{
+            template:'<div><p>hello</p><slot name="header"></slot><slot name="footer"></slot></div>'
+        })
+        var vm = new Vue({
+            el:'#root1'
+        })
+    </script>
+</body>
+</html>
