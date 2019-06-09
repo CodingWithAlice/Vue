@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>动态组件与v-once指令</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <!-- 这是一般情况下我们实现toggle的办法 -->
+    <div id="root">
+        <child-one v-if="type === 'child-one'"></child-one>
+        <child-two v-if="type === 'child-two'"></child-two>
+        <button @click='handleBtnClick'>change</button>
+    </div>
+    <script>
+        Vue.component('child-one',{
+            template:'<div>child-one</div>'
+        })
+        Vue.component('child-two',{
+            template:'<div>child-two</div>'
+        })
+        var vm =new Vue({
+            el:'#root',
+            data:{
+                type:'child-one'
+            },
+            methods:{
+                handleBtnClick:function(){
+                    this.type= this.type==='child-one'?'child-two':'child-one'
+                }
+            }
+        })
+    </script>
+    <!-- 接下来尝试用动态组件实现 -->
+    <!-- 动态组件：根据is里面数据的变化自动加载不同的组件 -->
+    <!-- 这里使用了一个v-once的指令,在组件第一次被渲染的时候,会直接放在内存里面,性能更高,有效提高一些静态内容的展示效率;
+        如果不加v-once的时候,每次切换,都要在底层先销毁一个组件,再创建一个组件,耗费了一定的性能 -->
+    <div id="root1">
+        <component :is = 'type'></component>
+        <button @click='handleBtnClick1'>change</button>
+    </div>
+    <script>
+        Vue.component('child-one',{
+            template:'<div v-once>child-one</div>'
+        })
+        Vue.component('child-two',{
+            template:'<div v-once>child-two</div>'
+        })
+        var vm =new Vue({
+            el:'#root1',
+            data:{
+                type:'child-two'
+            },
+            methods:{
+                handleBtnClick1:function(){
+                    this.type= this.type === 'child-one' ? 'child-two' : 'child-one'
+                }
+            }
+        })
+    </script>
+</body>
+</html>
